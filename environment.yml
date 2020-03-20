@@ -1,0 +1,12 @@
+name: mibisualization
+channels:
+- conda-forge
+- defaults
+dependencies:
+- pip=19.1.1
+- python=3.7.3
+- pip:
+    - matplotlib==2.2.3
+    - numpy==1.16.0
+    - pandas==0.23.4
+    - git+git://github.com/ionpath/mibitracker-client@v1.2.6
