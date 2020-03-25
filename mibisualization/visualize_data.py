@@ -338,21 +338,28 @@ def read_panel_from_csv(panel_file, anonymize_targets=False):
     return panel_df
 
 
-def read_isobaric_corrections(json_file):
+def read_isobaric_corrections(json_file, a_masses=None):
     """
     Read isobaric corrections json file.
 
-    This function reads the isobaric corrections file in json format from MIBI/O
-    and creates a dictionary of mass interferences.
+    This function reads the isobaric corrections file in json format from
+    MIBI/O and creates a dictionary of mass interferences.
     In the dictionary, the keys are masses of recipients and the values are
     lists of masses of donors to that recipient:
     {recipient1: [donor11, donor12, ...], recipient2: [donor21, donor22, ...],
     ...}
 
+    If a list of masses is specified, only the corrections to those masses will
+    be returned. If some of the specified masses are not in the json file,
+    empty donor lists are returned for them.
+
     Parameters
     ----------
-    data1 : `~numpy.ndarray`
-        2-D image data to plot. This image will be visible at the beginning.
+    json_file : str
+        Path to the json file with the isobaric corrections. The following keys
+        are required: 'RecipientMass', 'DonorMass'.
+    a_masses : `~numpy.ndarray`, optional
+        1-D array of selected masses to include in the dictionary.
 
     Returns
     -------
@@ -368,6 +375,15 @@ def read_isobaric_corrections(json_file):
             dict_corrs[corr['RecipientMass']].append(corr['DonorMass'])
         except KeyError:
             dict_corrs[corr['RecipientMass']] = [corr['DonorMass']]
+
+    if a_masses is not None:
+        dict_masses = {}
+        for mass in a_masses:
+            try:
+                dict_masses[mass] = dict_corrs[mass]
+            except KeyError:
+                dict_masses[mass] = []
+        dict_corrs = dict_masses
 
     return dict_corrs
 
