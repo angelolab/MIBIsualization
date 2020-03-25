@@ -1,4 +1,5 @@
 import os
+import json
 
 import numpy as np
 import pandas as pd
@@ -335,6 +336,40 @@ def read_panel_from_csv(panel_file, anonymize_targets=False):
                                             str(x['Mass']), axis=1)
 
     return panel_df
+
+
+def read_isobaric_corrections(json_file):
+    """
+    Read isobaric corrections json file.
+
+    This function reads the isobaric corrections file in json format from MIBI/O
+    and creates a dictionary of mass interferences.
+    In the dictionary, the keys are masses of recipients and the values are
+    lists of masses of donors to that recipient:
+    {recipient1: [donor11, donor12, ...], recipient2: [donor21, donor22, ...],
+    ...}
+
+    Parameters
+    ----------
+    data1 : `~numpy.ndarray`
+        2-D image data to plot. This image will be visible at the beginning.
+
+    Returns
+    -------
+    dict_corrs : dict
+        Dictionary containing the isobaric corrections.
+    """
+    with open(json_file) as jf:
+        l_corrs = json.load(jf)
+
+    dict_corrs = {}
+    for corr in l_corrs:
+        try:
+            dict_corrs[corr['RecipientMass']].append(corr['DonorMass'])
+        except KeyError:
+            dict_corrs[corr['RecipientMass']] = [corr['DonorMass']]
+
+    return dict_corrs
 
 
 def plot_1_fov(file_name, l_channel, ax=None, file_id=''):
