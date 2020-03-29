@@ -4,8 +4,13 @@ Script to launch the tiff generation step of MIBI/O (a.k.a. mibio).
 The slide background (bg) subtraction is performed at this step, though it can
 be turned off via the `remove_slide_bg` variable.
 
-The script creates a subprocess that launches mibio via the command line
-interface (CLI). Since mibio still opens the GUI and keeps it open after the
+The script first edits the mibio config file to specify the corresponding
+parameters for slide background removal and TIFF generation.
+Then, it builds the system call with the corresponding command line options
+and it creates a subprocess that launches mibio via the command line
+interface (CLI).
+
+Since mibio still opens the GUI and keeps it open after the
 process is finished, the script waits for a period of time (controled by the
 `timeout_sec` variable). After the time has finished, the script checks for
 the existence of the output TIFF file and its integrity (in terms of file size
