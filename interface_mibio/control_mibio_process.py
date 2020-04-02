@@ -144,6 +144,8 @@ fovs = 'point_name'
 panel_path = data_path.joinpath('project/panel/Panel.csv')
 fov_size = 500 # um
 
+#use_default_mass_windows = True
+use_default_mass_windows = False
 remove_slide_bg = True
 #remove_slide_bg = False
 #recalibrate_mass = True
@@ -159,6 +161,10 @@ if not output_tiff_path.is_dir():
 output_file_path = output_tiff_path.joinpath(output_file_name)
 
 # config file options
+# mass windows interval is applied to all masses in the panel
+mass_windows_interval = (-0.3, 0.)
+if use_default_mass_windows:
+    mass_windows_interval = (-0.3, 0.3)
 # bg removal types are all applied to the same TIFF file
 # bg thresholds are used for different TIFF files
 #bg_thresholds = [0.0, 1.0, 5.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0, 150.0]
@@ -230,8 +236,8 @@ for bg_thres_ev in bg_thresholds_ev:
             with open(config_file_path, 'r+') as config_file:
                 json_data = json.load(config_file)
                 # select mass window
-                json_data['Generator.DefaultMassStart'] = -0.3
-                json_data['Generator.DefaultMassStop'] = 0.0
+                json_data['Generator.DefaultMassStart'] = mass_windows_interval[0]
+                json_data['Generator.DefaultMassStop'] = mass_windows_interval[1]
                 # initialize the auto bg removal options (no bg removal)
                 json_data['Generator.BackgroundRemovalAuto.events'] = False
                 json_data['Generator.BackgroundRemovalAuto.197'] = False
