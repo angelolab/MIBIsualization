@@ -387,6 +387,41 @@ def read_isobaric_corrections(json_file, a_masses=None):
 
     return dict_corrs
 
+def write_isobaric_csv(corrs, outfile_name):
+    """
+    Write isobaric corrections to csv file.
+
+    This function reads isobaric corrections from either a MIBI/O json
+    file format, or a created dictionary of mass interferences, as 
+    created in `read_isobaric_corrections(...)`.
+
+    Parameters
+    ----------
+    corrs : str or dictionary
+        str -> Path to json file with the isobaric corrections. The following
+        keys are required: 'RecipientMass', 'DonorMass'.
+        dictionary -> Dictionary containing the isobaric corrections
+    outfile_name : str
+        Path to the written csv file.  This will overwrite any csv which may
+        currently reside at the given path
+
+    Returns
+    -------
+    None
+    """
+    # check if input is dictionary or json file path
+    #if os.path.exists(corrs):
+    #    corrs = read_isobaric_corrections(corrs) 
+    if not isinstance(corrs, dict):
+        try:
+            corrs = str(corrs)
+            corrs = read_isobaric_corrections(corrs)
+        except:
+            raise ValueError(f'Unable to read from file: {corrs}')
+    with open(outfile_name, 'w') as f:
+        f.write('Recipient, Donors->\n')
+        for recipient in corrs.keys():
+            f.write(f'{recipient},{",".join(map(str, corrs[recipient]))}\n')
 
 def plot_1_fov(file_name, l_channel, ax=None, file_id=''):
     """Plot a selection of channels for one FoV.
