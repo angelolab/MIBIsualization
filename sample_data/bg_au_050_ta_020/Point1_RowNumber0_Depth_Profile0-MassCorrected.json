@@ -1,0 +1,20 @@
+[
+    {
+        "DonorName": "Y89",
+        "DonorMass": 89,
+        "RecipientName": "In115",
+        "RecipientMass": 115,
+        "Percent": 10.0,
+        "CountsToRemove": 748163,
+        "ActualRemoved": 313235
+    },
+    {
+        "DonorName": "Au197",
+        "DonorMass": 197,
+        "RecipientName": "In115",
+        "RecipientMass": 115,
+        "Percent": 0.3,
+        "CountsToRemove": 20209,
+        "ActualRemoved": 20209
+    }
+]
