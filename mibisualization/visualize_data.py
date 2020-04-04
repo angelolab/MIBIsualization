@@ -40,6 +40,64 @@ def get_know_masses_df():
     df_known_masses = pd.DataFrame(l_dict_known_masses)
     return df_known_masses
 
+def plot_rb_image(red_channel, blue_channel, title='', ax=None,
+                  binary=False, brighten_image=False, normalize=False,
+                  hi_res=False, style_kwargs=None):
+    """Plot 2-D rb image.
+    
+    Plot 2 images in separate color channels.
+
+    Parameters
+    ----------
+    red_channel : `~numpy.ndarray`
+        2-D image data to plot. This image will be shown in red
+    blue_channel : `~numpy.ndarray`
+        2-D image data to plot. This image will be shwon in blue
+        Overlap between channels will appear white
+    title : str, optional
+        Title for the plot
+    ax : `~matplotlib.axes.Axes`, optional
+        Axes of the figure for the plot
+    binary : bool, optional
+        All non-zero color channels are raised to maximum value
+        Makes visualizing overlaps with low signal intensity easier
+    brighten_image : bool, optional
+        If activated, a gamma correction of 1/2 is applied to the image
+        Less intense version of binary
+    normalize : bool, optional
+        If activated, red and blue channels are rescaled so that their 
+        respective maximum responce values correspond to the maximum
+        color values
+        Makes comparing low total count channels easier
+    hi_res : bool, optional
+        This parameter controls the size and resolution of the plotted image:
+        * False will set the size to 8x8 (medium size image)
+        * True will set the resolution to 250 dpi (large image)
+    style_kwargs : dict, optional
+        Style options for matplotlib imshow plt
+    
+    Returns
+    -------
+    ax2 : `~matplotlib.axes.Axes`
+        Axes of the figure containing the rb plot
+    """
+    dim=np.zeros(blue_channel.shape)
+    
+    B = np.stack((dim,blue_channel/2,blue_channel/2),axis=2)
+    R = np.stack((red_channel,dim,dim),axis=2)
+
+    # Rescale to [0,1]
+    B, R = B/256.,R/256.
+
+    if binary:
+        B, R = np.ceil(B), np.ceil(R)
+    else:
+        if normalize:
+            B, R = B/np.amax(B), R/np.amax(R)
+
+    ax2, im = plot_image(R+B, title=title, ax=ax, brighten_image=brighten_image, hi_res=hi_res, style_kwargs=style_kwargs)
+
+    return ax2
 
 def plot_toggle_image(data1, data2, title='', ax=None,
                       brighten_image=False, hi_res=False,
