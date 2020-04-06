@@ -40,6 +40,64 @@ def get_know_masses_df():
     df_known_masses = pd.DataFrame(l_dict_known_masses)
     return df_known_masses
 
+def plot_rb_image(red_channel, blue_channel, title='', ax=None,
+                  binary=False, brighten_image=False, normalize=False,
+                  hi_res=False, style_kwargs=None):
+    """Plot 2-D rb image.
+    
+    Plot 2 images in separate color channels.
+
+    Parameters
+    ----------
+    red_channel : `~numpy.ndarray`
+        2-D image data to plot. This image will be shown in red
+    blue_channel : `~numpy.ndarray`
+        2-D image data to plot. This image will be shwon in blue
+        Overlap between channels will appear white
+    title : str, optional
+        Title for the plot
+    ax : `~matplotlib.axes.Axes`, optional
+        Axes of the figure for the plot
+    binary : bool, optional
+        All non-zero color channels are raised to maximum value
+        Makes visualizing overlaps with low signal intensity easier
+    brighten_image : bool, optional
+        If activated, a gamma correction of 1/2 is applied to the image
+        Less intense version of binary
+    normalize : bool, optional
+        If activated, red and blue channels are rescaled so that their 
+        respective maximum responce values correspond to the maximum
+        color values
+        Makes comparing low total count channels easier
+    hi_res : bool, optional
+        This parameter controls the size and resolution of the plotted image:
+        * False will set the size to 8x8 (medium size image)
+        * True will set the resolution to 250 dpi (large image)
+    style_kwargs : dict, optional
+        Style options for matplotlib imshow plt
+    
+    Returns
+    -------
+    ax2 : `~matplotlib.axes.Axes`
+        Axes of the figure containing the rb plot
+    """
+    dim=np.zeros(blue_channel.shape)
+    
+    B = np.stack((dim,blue_channel/2,blue_channel/2),axis=2)
+    R = np.stack((red_channel,dim,dim),axis=2)
+
+    # Rescale to [0,1]
+    B, R = B/256.,R/256.
+
+    if binary:
+        B, R = np.ceil(B), np.ceil(R)
+    else:
+        if normalize:
+            B, R = B/np.amax(B), R/np.amax(R)
+
+    ax2, im = plot_image(R+B, title=title, ax=ax, brighten_image=brighten_image, hi_res=hi_res, style_kwargs=style_kwargs)
+
+    return ax2
 
 def plot_toggle_image(data1, data2, title='', ax=None,
                       brighten_image=False, hi_res=False,
@@ -387,6 +445,41 @@ def read_isobaric_corrections(json_file, a_masses=None):
 
     return dict_corrs
 
+def write_isobaric_csv(corrs, outfile_name):
+    """
+    Write isobaric corrections to csv file.
+
+    This function reads isobaric corrections from either a MIBI/O json
+    file format, or a created dictionary of mass interferences, as 
+    created in `read_isobaric_corrections(...)`.
+
+    Parameters
+    ----------
+    corrs : str or dictionary
+        str -> Path to json file with the isobaric corrections. The following
+        keys are required: 'RecipientMass', 'DonorMass'.
+        dictionary -> Dictionary containing the isobaric corrections
+    outfile_name : str
+        Path to the written csv file.  This will overwrite any csv which may
+        currently reside at the given path
+
+    Returns
+    -------
+    None
+    """
+    # check if input is dictionary or json file path
+    #if os.path.exists(corrs):
+    #    corrs = read_isobaric_corrections(corrs) 
+    if not isinstance(corrs, dict):
+        try:
+            corrs = str(corrs)
+            corrs = read_isobaric_corrections(corrs)
+        except:
+            raise ValueError(f'Unable to read from file: {corrs}')
+    with open(outfile_name, 'w') as f:
+        f.write('Recipient, Donors->\n')
+        for recipient in corrs.keys():
+            f.write(f'{recipient},{",".join(map(str, corrs[recipient]))}\n')
 
 def plot_1_fov(file_name, l_channel, ax=None, file_id=''):
     """Plot a selection of channels for one FoV.
