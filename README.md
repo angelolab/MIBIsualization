@@ -17,6 +17,7 @@ This module contains a python source file with helper functions in order to plot
 2. help with the visualization of the several steps of the low level analysis (background subtraction and image cleaning) of the MIBI data.
 
 The notebooks are particularly useful to visualize the data coming out from the MIBI/O (a.k.a. mibio) analysis software from IONpath or the MIBItracker.
+The notebooks are stored in a clean state, but can be run immediately to obtain meaningful plots that exemplify the usage of the visualization tools, using the data stored in the *sample_data* module.
 
 ### interface_mibio
 
@@ -25,6 +26,20 @@ This is a secondary module of the repository. This modue is in charge of interfa
 This module is only intended for advanced users. It contains a single python file that builds the system calls to mibio. There are many parameters that can be configured inside the script.
 
 In order to install and use this module, only the script inside the module and a regular python3 installation are required (no conda is necessary). The following sections refer to the main module of this repository.
+
+### sample_data
+
+This module contains real MIBI data used within the notebooks of the *mibisualization* module.
+The data represents one point (a.k.a. FoV or ROI) in one run (a.k.a. slide) and comes in the form of:
+- MIBItiff files containing image data for each of the cleaning steps:
+ - raw binned images (in subfolder `bg_none`).
+ - slide bg removal (in subfolder `bg_au_050_ta_020`).
+ - isobaric corrections (characterized only for channel 115; with suffix `-MassCorrected`).
+ - denoising (with suffix `-Filtered`).
+- CSV files containing panel information and spectral data.
+- JSON files containing cleaning parameters: isobaric correction and denoising parameters.
+
+The slide bg was removed using thresholds of 50 and 20 counts for the gold and tantalum channels respectively.
 
 ## Installation
 
