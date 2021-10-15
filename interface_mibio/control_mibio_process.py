@@ -71,8 +71,8 @@ def edit_config(bg_thres_ev,bg_thres_au,bg_thres_ta):
     with open(params.config_file_path, 'r+') as config_file:
         json_data = json.load(config_file)
         # select mass window
-        json_data['Generator.DefaultMassStart'] = -0.3
-        json_data['Generator.DefaultMassStop'] = 0.0
+        json_data['Generator.DefaultMassStart'] = params.mass_start
+        json_data['Generator.DefaultMassStop'] = params.mass_stop
         # initialize the auto bg removal options (no bg removal)
         json_data['Generator.BackgroundRemovalAuto.events'] = False
         json_data['Generator.BackgroundRemovalAuto.197'] = False
