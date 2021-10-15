@@ -15,6 +15,10 @@ recalibrate_mass =                  False
 config_file_path =                  mibio_helper_files_dir_path.joinpath('mibio_config.json')                                   
 log_file_path =                     mibio_helper_files_dir_path.joinpath('mibio.log')                                       
 
+# mass window
+mass_start = -0.3
+mass_stop = 0
+
 # best to set output_file_name to last FOV in array
 output_file_name =                  f'Point{fovs[-1]}_RowNumber0_Depth_Profile0.tiff'            
 output_tiff_path =                  xml_path.parent.joinpath(xml_path.stem).joinpath(str(xml_path.stem) + '_TIFF')  
