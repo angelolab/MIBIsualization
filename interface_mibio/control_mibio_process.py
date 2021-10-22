@@ -1,7 +1,7 @@
 """
 Script to launch the tiff generation step of MIBI/O via the command line interface
 
-The slide background (bg) subtraction is performed at this step, although it is 
+The slide background (bg) subtraction is performed at this step, although it is
 toggleable via the `remove_slide_bg` variable
 
 The script first edits the mibio config file to reflect the input parameters
@@ -118,15 +118,25 @@ def edit_config(bg_thres_ev,bg_thres_au,bg_thres_ta):
         return output_subdir_name
 
 # run call to mibio cli
-def run(mibio_path : pathlib.Path, mibio_cmd : str, timeout_sec : float, output_subdir_name : str, config_file_path : pathlib.Path, log_file_path : pathlib.Path, output_file_path : pathlib.Path):
-    # output file shouldn't exist
-    if output_file_path.exists():
-        print(f'WARNING! Output file {output_file_path} exists!')
-        print('Terminating...')
-        return 0
+def run(mibio_path : pathlib.Path, mibio_cmd : str, timeout_sec : float, output_subdir_name : str, config_file_path : pathlib.Path, log_file_path : pathlib.Path, output_tiff_path : pathlib.Path):
+
+    # list of output tiff files, based on the selected FoVs
+    # if RowNumber or Depth Profile change, this will not work
+    l_tiff_files = [f'Point{fov_num}_RowNumber0_Depth_Profile0.tiff' for
+                    fov_num in params.fovs]
+    # list of paths to the output tiff files
+    l_output_file_paths = [output_tiff_path.joinpath(tiff_file) for
+                           tiff_file in l_tiff_files]
+
+    # output files shouldn't exist
+    for output_file_path in l_output_file_paths:
+        if output_file_path.exists():
+            print(f'WARNING! Output file {output_file_path} exists!')
+            print('Terminating...')
+            return 0
 
     # create log file
-    output_log_file_path = output_file_path.parent.joinpath('out.launch_mibio.log')
+    output_log_file_path = output_tiff_path.joinpath('out.launch_mibio.log')
     output_log_file = output_log_file_path.open(mode='r+')
 
     # redirect stdout+stderr to log file
@@ -142,21 +152,23 @@ def run(mibio_path : pathlib.Path, mibio_cmd : str, timeout_sec : float, output_
     print(f'process ID: {proc.pid}')
     time.sleep(timeout_sec)
 
-    # probe output file size for 'finish signal'
-    output_file_size = 0
+    # probe size of last output file for 'finish signal'
+    last_output_file_size = 0
     for i in range(params.n_trials):
         try:
-            output_file_size = output_file_path.stat().st_size
+            last_output_file_size = l_output_file_paths[-1].stat().st_size
             break
         except FileNotFoundError:
-            output_file_size = -1
+            last_output_file_size = -1
             time.sleep(timeout_sec/10)
-    if output_file_size <= 0:
+    if last_output_file_size <= 0:
         print('Failed')
         return 0
     time.sleep(timeout_sec/10)
-    output_file_size = output_file_path.stat().st_size
-    print(f'output file size: {output_file_size}')
+    print('output files:')
+    for output_file_path in l_output_file_paths:
+        output_file_size = output_file_path.stat().st_size # bytes
+        print(f' {output_file_path.name}: {output_file_size/pow(1024, 2)} MB')
 
     # redirect output to previous states
     sys.stdout, sys.stderr = save_stdout, save_stderr
@@ -164,11 +176,12 @@ def run(mibio_path : pathlib.Path, mibio_cmd : str, timeout_sec : float, output_
     output_log_file.close()
 
     # copy/move relevant outputs to subdirectory
-    output_dir_path = output_file_path.parent.joinpath(output_subdir_name)
+    output_dir_path = output_tiff_path.joinpath(output_subdir_name)
     print(f'mkdir {output_dir_path}')
     output_dir_path.mkdir()
-    final_output_file_path = output_dir_path.joinpath(output_file_path.name)
-    output_file_path.replace(final_output_file_path)
+    for output_file_path in l_output_file_paths:
+        final_output_file_path = output_dir_path.joinpath(output_file_path.name)
+        output_file_path.replace(final_output_file_path)
     final_output_log_path = output_dir_path.joinpath(output_log_file_path.name)
     output_log_file_path.replace(final_output_log_path)
     final_config_file_path = output_dir_path.joinpath(config_file_path.name)
@@ -185,10 +198,10 @@ def main():
 
     fovs = []
     for fov_num in params.fovs:
-        fovs.append(f"Point{fov_num}-{root[0][fov_num+3].attrib['PointName']}")
+        fovs.append(f'Point{fov_num}-{root[0][fov_num+3].attrib["PointName"]}')
     if not params.output_tiff_path.is_dir():
         params.output_tiff_path.mkdir()
-    
+
     valid_bg_methods = ['events', 'Au', 'Ta', 'autoevents', 'autoAu', 'autoTa']
 
     for bg_method in params.bg_removal_types:
@@ -212,7 +225,7 @@ def main():
                 cmd += f' --remove_slide_background {params.remove_slide_bg}'
                 cmd += f' --mass_recal {params.recalibrate_mass}'
 
-                job_status = run(params.mibio_path, cmd, params.timeout_sec, output_subdir_name, params.config_file_path, params.log_file_path, params.output_file_path)
+                job_status = run(params.mibio_path, cmd, params.timeout_sec, output_subdir_name, params.config_file_path, params.log_file_path, params.output_tiff_path)
 
                 if job_status:
                     print('Job Done')
