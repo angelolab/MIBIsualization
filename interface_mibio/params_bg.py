@@ -6,6 +6,7 @@ mibio_helper_files_dir_path =       pathlib.Path('/usually__~/.mibio')
 data_path =                         pathlib.Path('/path/to/data')
 xml_path =                          data_path.joinpath('slide.xml')
 panel_path =                        data_path.joinpath('panel.csv')
+output_tiff_path =                  xml_path.parent.joinpath(xml_path.stem).joinpath(str(xml_path.stem) + '_TIFF')
 fovs =                              [1,2,3,5,8,13]
 
 fov_size =                          500
@@ -18,9 +19,6 @@ log_file_path =                     mibio_helper_files_dir_path.joinpath('mibio.
 # mass window
 mass_start = -0.3
 mass_stop = 0
-
-# output folder for TIFF files
-output_tiff_path =                  xml_path.parent.joinpath(xml_path.stem).joinpath(str(xml_path.stem) + '_TIFF')
 
 # good parameter set: {ev: 1000000, au: 50, ta: 20}
 use_default_slide_bg_removal_pars = False
