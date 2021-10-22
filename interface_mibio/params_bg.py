@@ -1,3 +1,15 @@
+"""
+User-defined parameters necessary to run MIBI/O.
+
+The list of parameters includes parameters:
+ - specific to the installation of MIBI/O.
+ - specific to the analysis, i.e. parameters to pass to the MIBI/O system call.
+ - specific for the control of the MIBI/O process.
+
+TODO: the parameters could be as well specified in another format, i.e. json or
+xml file, instead of a python file.
+"""
+
 import pathlib
 
 mibio_path =                        pathlib.Path('/path/to/mibio/executable')
