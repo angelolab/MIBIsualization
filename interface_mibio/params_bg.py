@@ -1,3 +1,15 @@
+"""
+User-defined parameters necessary to run MIBI/O.
+
+The list of parameters includes parameters:
+ - specific to the installation of MIBI/O.
+ - specific to the analysis, i.e. parameters to pass to the MIBI/O system call.
+ - specific for the control of the MIBI/O process.
+
+TODO: the parameters could be as well specified in another format, i.e. json or
+xml file, instead of a python file.
+"""
+
 import pathlib
 
 mibio_path =                        pathlib.Path('/path/to/mibio/executable')
@@ -6,15 +18,11 @@ mibio_helper_files_dir_path =       pathlib.Path('/usually__~/.mibio')
 data_path =                         pathlib.Path('/path/to/data')
 xml_path =                          data_path.joinpath('slide.xml')
 panel_path =                        data_path.joinpath('panel.csv')
-output_tiff_path =                  xml_path.parent.joinpath(xml_path.stem).joinpath(str(xml_path.stem) + '_TIFF')
 fovs =                              [1,2,3,5,8,13]
 
 fov_size =                          500
 remove_slide_bg =                   True
 recalibrate_mass =                  False
-
-config_file_path =                  mibio_helper_files_dir_path.joinpath('mibio_config.json')
-log_file_path =                     mibio_helper_files_dir_path.joinpath('mibio.log')
 
 # mass window
 mass_start = -0.3

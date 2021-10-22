@@ -1,13 +1,13 @@
 """
-Script to launch the tiff generation step of MIBI/O via the command line interface
+Script to launch the tiff generation step of MIBI/O via the command line interface.
 
 The slide background (bg) subtraction is performed at this step, although it is
-toggleable via the `remove_slide_bg` variable
+toggleable via the `remove_slide_bg` variable.
 
 The script first edits the mibio config file to reflect the input parameters
 for the slide background removal and TIFF generation, as found in `params_bg.py`
 Then, it builds the system call with the corresponding command line options and
-it creates a subprocess that launches mibio via the command line interface (CLI)
+it creates a subprocess that launches mibio via the command line interface (CLI).
 
 Since mibio still opens the GUI and keeps it open after the process is finished,
 the script waits for a period of time (controlled by the `timeout_sec` variable).
@@ -23,7 +23,7 @@ thresholds for different subtraction methods. This is accomplished via repeated
 calls to the mibio CLI; TIFFs with different parameters are saved separately in
 their corresponding subdirectory.
 
-TODO: Add option to save parameter file in subdirectory (txt file will do)
+TODO: Add option to save parameter file in subdirectory (txt file will do).
 
 Run with:
     py control_mibio_process.py
@@ -33,7 +33,7 @@ To monitor progress while the script runs in the background, use:
     tail -f out.mibio.log
 To stop process in nohup, use:
     kill -9 `PID`
-where `PID` is the process id number output when starting nohup
+where `PID` is the process id number output when starting nohup.
 """
 
 import sys
@@ -46,8 +46,14 @@ from datetime import datetime
 import json
 import xml.etree.ElementTree as ET
 
-# inputs in 'params_bg.py'
+# user-defined input parameters in 'params_bg.py'
 import params_bg as params
+
+# define mibio-specific parameters
+config_file_path = params.mibio_helper_files_dir_path.joinpath('mibio_config.json')
+log_file_path =    params.mibio_helper_files_dir_path.joinpath('mibio.log')
+output_tiff_path = params.xml_path.parent.joinpath(
+    params.xml_path.stem).joinpath(str(params.xml_path.stem) + '_TIFF')
 
 # dictionary of background removal terms
 bg_dict = {
@@ -68,7 +74,7 @@ def print_loops(bg_removal_type : str, thresh):
 
 # editing config file before mibio call
 def edit_config(bg_thres_ev,bg_thres_au,bg_thres_ta):
-    with open(params.config_file_path, 'r+') as config_file:
+    with open(config_file_path, 'r+') as config_file:
         json_data = json.load(config_file)
         # select mass window
         json_data['Generator.DefaultMassStart'] = params.mass_start
@@ -199,8 +205,8 @@ def main():
     fovs = []
     for fov_num in params.fovs:
         fovs.append(f'Point{fov_num}-{root[0][fov_num+3].attrib["PointName"]}')
-    if not params.output_tiff_path.is_dir():
-        params.output_tiff_path.mkdir()
+    if not output_tiff_path.is_dir():
+        output_tiff_path.mkdir()
 
     valid_bg_methods = ['events', 'Au', 'Ta', 'autoevents', 'autoAu', 'autoTa']
 
@@ -219,13 +225,17 @@ def main():
             for bg_thres_ta in params.bg_thresholds_ta:
                 print_loops('Ta', bg_thres_ta)
                 print()
-                output_subdir_name = edit_config(bg_thres_ev,bg_thres_au,bg_thres_ta)
+                output_subdir_name = edit_config(bg_thres_ev,
+                                                 bg_thres_au,
+                                                 bg_thres_ta)
 
                 cmd = (str(params.mibio_path) + ' generate_tiff ' + str(params.xml_path) + ' ' + str(params.panel_path) + ' ' + str(params.fov_size) + ' --fovs ' + ' '.join(fovs))
                 cmd += f' --remove_slide_background {params.remove_slide_bg}'
                 cmd += f' --mass_recal {params.recalibrate_mass}'
 
-                job_status = run(params.mibio_path, cmd, params.timeout_sec, output_subdir_name, params.config_file_path, params.log_file_path, params.output_tiff_path)
+                job_status = run(params.mibio_path, cmd, params.timeout_sec,
+                                 output_subdir_name, config_file_path,
+                                 log_file_path, output_tiff_path)
 
                 if job_status:
                     print('Job Done')
