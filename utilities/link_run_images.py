@@ -17,8 +17,9 @@ if len(sys.argv) > 1:
     run_dir = sys.argv[1]
 print(f'run dir: {run_dir}')
 
-#n_points = 2 # debug
-n_points = 50
+n_points = 2 # debug
+if len(sys.argv) > 2:
+    n_points = int(sys.argv[2])
 print(f'Attempting loop over {n_points} points:')
 for i in range(n_points):
     point_id = i + 1
