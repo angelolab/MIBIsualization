@@ -1,4 +1,18 @@
-# Use: py link_run_images.py /path/to/rundir
+"""
+Link all FoV images of a run.
+
+Utility script to link the BMP images of each FoV of a single run into a common
+directory for a more efficient review of the run.
+
+The `SAVE` flag has to be set to `True` before running.
+
+The output of the script is
+- one txt file with the input command parameters.
+- one image link per FoV.
+
+Run with:
+    py link_run_images.py /path/to/rundir n_points
+"""
 
 import os, sys
 
