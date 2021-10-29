@@ -6,7 +6,7 @@ Visualization tools for MIBItiff data.
 It is basicaly a multipage tiff file with specific metadata information, relevant to the analysis of Multiplexed Ion Beam Imaging (MIBI) data.
 For details about the MIBItiff format, visit IONpath's [mibitracker-client](https://github.com/ionpath/mibitracker-client) open source repository in Github, especially the [MibiImage](https://github.com/ionpath/mibitracker-client/blob/master/MibiImage_Tutorial.ipynb) jupyter notebook tutorial.
 
-This repository contains two modules:
+This repository contains several modules:
 
 ### mibisualization
 
@@ -40,6 +40,11 @@ The data represents one point (a.k.a. FoV or ROI) in one run (a.k.a. slide) and 
 - JSON files containing cleaning parameters: isobaric correction and denoising parameters.
 
 The slide bg was removed using thresholds of 50 and 20 counts for the gold and tantalum channels respectively.
+
+### utilities
+
+This module contains utility scripts (tools) to help handle the data:
+- `link_run_images.py`: python script to link all FoV images of a single run into a common directory.
 
 ## Installation
 
