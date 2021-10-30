@@ -21,11 +21,13 @@ The notebooks are stored in a clean state, but can be run immediately to obtain 
 
 ### interface_mibio
 
-This is a secondary module of the repository. This modue is in charge of interfacing the MIBI/O (a.k.a. mibio) via the command line interface, using system calls.
+This modue is in charge of interfacing the MIBI/O (a.k.a. mibio) program via the command line interface, using system calls.
 
-This module is only intended for advanced users. It contains a single python file that builds the system calls to mibio. There are many parameters that can be configured inside the script.
+This module is only intended for advanced users. It contains two python files:
+* `control_mibio_process.py` builds the system calls to mibio and stores the output in a specific folder, according to the background selection specified in `params_bg.py`.
+* `params_bg.py` defines parameters to be used by `control_mibio_process.py` in order to modify the system call to mibio. The parameters in this file are either installation-specific or analysis-specific.
 
-In order to install and use this module, only the script inside the module and a regular python3 installation are required (no conda is necessary). The following sections refer to the main module of this repository.
+In order to install and use this module, only the scripts inside the module and a regular python3 installation are required (no conda is necessary).
 
 ### sample_data
 
