@@ -31,13 +31,13 @@ In order to install and use this module, only the script inside the module and a
 
 This module contains real MIBI data used within the notebooks of the *mibisualization* module.
 The data represents one point (a.k.a. FoV or ROI) in one run (a.k.a. slide) and comes in the form of:
-- MIBItiff files containing image data for each of the cleaning steps:
- - raw binned images (in subfolder `bg_none`).
- - slide bg removal (in subfolder `bg_au_050_ta_020`).
- - isobaric corrections (characterized only for channel 115; with suffix `-MassCorrected`).
- - denoising (with suffix `-Filtered`).
-- CSV files containing panel information and spectral data.
-- JSON files containing cleaning parameters: isobaric correction and denoising parameters.
+* MIBItiff files containing image data for each of the cleaning steps:
+    - raw binned images (in subfolder `bg_none`).
+    - slide bg removal (in subfolder `bg_au_050_ta_020`).
+    - isobaric corrections (characterized only for channel 115; with suffix `-MassCorrected`).
+    - denoising (with suffix `-Filtered`).
+* CSV files containing panel information and spectral data.
+* JSON files containing cleaning parameters: isobaric correction and denoising parameters.
 
 The slide bg was removed using thresholds of 50 and 20 counts for the gold and tantalum channels respectively.
 
