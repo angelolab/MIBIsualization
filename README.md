@@ -10,14 +10,24 @@ This repository contains several modules:
 
 ### mibisualization
 
-This is the main module of the repository. This module contains the tools necessary for the visualization of MIBItiff files.
+This is the main module of the repository. This module contains the tools necessary for the visualization of MIBItiff files (a.k.a. image files).
 
-This module contains a python source file with helper functions in order to plot MIBItiff data and a few jupyter notebooks that:
+This module contains a python source file (`visualize_data.py`) with helper functions in order to plot MIBItiff data and a few jupyter notebooks that:
 1. demonstrate how to use the helper functions.
 2. help with the visualization of the several steps of the low level analysis (background subtraction and image cleaning) of the MIBI data.
 
 The notebooks are particularly useful to visualize the data coming out from the MIBI/O (a.k.a. mibio) analysis software from IONpath or the MIBItracker.
 The notebooks are stored in a clean state, but can be run immediately to obtain meaningful plots that exemplify the usage of the visualization tools, using the data stored in the *sample_data* module.
+
+The following notebooks are included:
+* `visualize_channel.ipynb` plot the selected channel for a list of image files.
+    - `visualize_channel_2thresholds.ipynb`: plot the selected channel for a matrix of bg thresholds.
+    - `visualize_channel_toggle_bg.ipynb`: plot 2 images in the same axis object and allow the user to toggle between both of them.
+* `visualize_point.ipynb`: plot spectrum and images of selected channels for 1 image file.
+    - `visualize_isob_corr_point.ipynb`: plot isobaric corrections of selected channels for 1 image file.
+    - `visualize_denoi_point.ipynb`: plot denoising of selected channels for 1 image file.
+    - `visualize_point_toggle_bg.ipynb`: plot 2 images in the same axis object and allow the user to toggle between both of them.
+* `visualize_process_stages.ipynb`: plot multiple mass channels at different stages of low-level processing for each point in each given slide.
 
 ### interface_mibio
 
