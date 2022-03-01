@@ -1,3 +1,12 @@
+"""
+Script to extract PNG images from all channels of all FOVs of a project.
+
+This script takes an FOV list and a folder of MIBItiff files  as input and
+extracts one image per FOV per channel and saves it as a PNG file.
+The images are stored in a subfolder of the input MIBItiff folder called PNGs.
+Inside, one folder per FOV will be saves, containing one PNG image per channel.
+"""
+
 import os
 
 import numpy as np
