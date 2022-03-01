@@ -95,7 +95,7 @@ def plot_rb_image(red_channel, blue_channel, title='', ax=None,
         if normalize:
             B, R = B/np.amax(B), R/np.amax(R)
 
-    ax2, im = plot_image(R+B, title=title, ax=ax, brighten_image=brighten_image, hi_res=hi_res, style_kwargs=style_kwargs)
+    ax2, im, fig = plot_image(R+B, title=title, ax=ax, brighten_image=brighten_image, hi_res=hi_res, style_kwargs=style_kwargs)
 
     return ax2
 
@@ -134,17 +134,17 @@ def plot_toggle_image(data1, data2, title='', ax=None,
         Axes of the figure containing the plot of the 2 images.
     """
 
-    ax1, im1 = plot_image(data1, ax=ax,
-                          title=title,
-                          brighten_image=brighten_image,
-                          hi_res=hi_res, style_kwargs=style_kwargs)
+    ax1, im1, fig1 = plot_image(data1, ax=ax,
+                                title=title,
+                                brighten_image=brighten_image,
+                                hi_res=hi_res, style_kwargs=style_kwargs)
     plt.ioff() # deactivate interactive mode in order not to show the next plot
     # and avoid empty white space in the jupyter notebook (probably not
     # necessary for pure python code)
-    ax2, im2 = plot_image(data2, ax=ax1,
-                          title=title,
-                          brighten_image=brighten_image,
-                          hi_res=hi_res, style_kwargs=style_kwargs)
+    ax2, im2, fig2 = plot_image(data2, ax=ax1,
+                                title=title,
+                                brighten_image=brighten_image,
+                                hi_res=hi_res, style_kwargs=style_kwargs)
     plt.ion() # turn interactive mode back on to be able to toggle
     im2.set_visible(False)
 
@@ -198,6 +198,7 @@ def plot_image(data, title='', ax=None,
     ax : `~matplotlib.axes.Axes`
         Axes of the figure containing the plot.
     image : `~matplotlib.image.AxesImage`
+    fig: `~matplotlib.figureFigure`
     """
     # create plot
     if not hi_res:
@@ -247,7 +248,7 @@ def plot_image(data, title='', ax=None,
     if not do_not_close_fig:
         # close figure to avoid white canvases
         plt.close(fig)
-    return ax, image
+    return ax, image, fig
 
 
 def read_spectrum_from_csv(spectrum_file):
