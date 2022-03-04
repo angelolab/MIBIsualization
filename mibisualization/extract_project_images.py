@@ -11,10 +11,13 @@ import os
 
 import numpy as np
 import pandas as pd
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 from mibidata import tiff
 from mibisualization import visualize_data as viz
+
+mpl.use('Agg') # non-interactive backend
 
 #SAVE_OUTPUT = True
 SAVE_OUTPUT = False
